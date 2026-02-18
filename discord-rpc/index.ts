@@ -33,7 +33,11 @@ function getArtist(track: Track): string {
 type RpcService = {
 	setEnabled: (enabled: boolean) => void;
 	connect: () => Promise<void>;
-	updateActivity: (activity: {title: string; artist: string; startTimestamp: number}) => Promise<void>;
+	updateActivity: (activity: {
+		title: string;
+		artist: string;
+		startTimestamp: number;
+	}) => Promise<void>;
 	clearActivity: () => Promise<void>;
 	disconnect: () => Promise<void>;
 };
@@ -57,8 +61,7 @@ async function resolveDiscordService(): Promise<RpcService | null> {
 		try {
 			const mod = await import(specifier);
 			const service =
-				mod?.getDiscordRpcService?.() ??
-				mod?.default?.getDiscordRpcService?.();
+				mod?.getDiscordRpcService?.() ?? mod?.default?.getDiscordRpcService?.();
 			if (service) {
 				cachedService = service as RpcService;
 				return cachedService;
@@ -76,8 +79,7 @@ async function resolveDiscordService(): Promise<RpcService | null> {
 		);
 		const mod = await import(resolved);
 		const service =
-			mod?.getDiscordRpcService?.() ??
-			mod?.default?.getDiscordRpcService?.();
+			mod?.getDiscordRpcService?.() ?? mod?.default?.getDiscordRpcService?.();
 		if (service) {
 			cachedService = service as RpcService;
 			return cachedService;
