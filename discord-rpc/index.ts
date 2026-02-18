@@ -10,7 +10,7 @@ import type {
 	PluginContext,
 	Track,
 } from '../../source/types/plugin.types.ts';
-import { getDiscordRpcService } from '../../source/services/discord/discord-rpc.service.ts';
+import {getDiscordRpcService} from '../../source/services/discord/discord-rpc.service.ts';
 
 const manifest: PluginManifest = {
 	id: 'discord-rpc',
@@ -112,4 +112,4 @@ const plugin: Plugin = {
 };
 
 export default plugin;
-export { manifest };
+export {manifest};
