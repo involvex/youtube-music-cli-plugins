@@ -1,0 +1,11 @@
+{
+	"id": "scrobbler",
+	"name": "Last.fm Scrobbler",
+	"version": "1.0.0",
+	"description": "Scrobble tracks to Last.fm",
+	"author": "Involvex",
+	"license": "MIT",
+	"main": "index.ts",
+	"permissions": ["player", "config", "network"],
+	"hooks": ["track-change", "play"]
+}

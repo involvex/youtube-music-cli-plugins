@@ -1,0 +1,11 @@
+{
+	"id": "adblock",
+	"name": "Adblock",
+	"version": "1.0.0",
+	"description": "Block ads and sponsored content in YouTube Music",
+	"author": "Involvex",
+	"license": "MIT",
+	"main": "index.ts",
+	"permissions": ["player"],
+	"hooks": ["stream-request", "track-change"]
+}

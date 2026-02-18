@@ -1,0 +1,15 @@
+{
+	"id": "lyrics",
+	"name": "Lyrics",
+	"version": "1.0.0",
+	"description": "Display synchronized lyrics for the current track",
+	"author": "Involvex",
+	"license": "MIT",
+	"main": "index.ts",
+	"permissions": ["player", "ui", "network"],
+	"hooks": ["track-change", "play", "pause"],
+	"ui": {
+		"views": ["lyrics"],
+		"shortcuts": ["l"]
+	}
+}

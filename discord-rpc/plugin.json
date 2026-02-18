@@ -1,0 +1,11 @@
+{
+	"id": "discord-rpc",
+	"name": "Discord Rich Presence",
+	"version": "1.0.0",
+	"description": "Show what you're listening to on Discord",
+	"author": "Involvex",
+	"license": "MIT",
+	"main": "index.ts",
+	"permissions": ["player", "config"],
+	"hooks": ["track-change", "play", "pause", "resume", "stop"]
+}

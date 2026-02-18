@@ -1,0 +1,11 @@
+{
+	"id": "notifications",
+	"name": "Desktop Notifications",
+	"version": "1.0.0",
+	"description": "Desktop notifications for track changes",
+	"author": "Involvex",
+	"license": "MIT",
+	"main": "index.ts",
+	"permissions": ["player", "config"],
+	"hooks": ["track-change"]
+}
