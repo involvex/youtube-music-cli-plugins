@@ -223,7 +223,7 @@ const plugin: Plugin = {
 
 		// Listen for track changes
 		context.on('track-change', async event => {
-			if (event.track) {
+			if ('track' in event && event.track) {
 				await loadLyricsForTrack(event.track, context);
 			} else {
 				currentLyrics = null;

@@ -9,6 +9,7 @@ import type {
 	Plugin,
 	PluginManifest,
 	PluginContext,
+	Track,
 } from '../../source/types/plugin.types.ts';
 
 const manifest: PluginManifest = {
@@ -59,12 +60,7 @@ let stats: AdblockStats = {
 	lastBlocked: null,
 };
 
-function isAd(track: {
-	videoId: string;
-	title: string;
-	artists?: Array<{name: string}>;
-	duration?: {totalSeconds: number};
-}): boolean {
+function isAd(track: Track): boolean {
 	// Check video ID blocklist
 	if (AD_PATTERNS.videoIds.has(track.videoId)) {
 		return true;
@@ -89,8 +85,8 @@ function isAd(track: {
 	}
 
 	// Check duration (very short tracks might be ads)
-	if (track.duration) {
-		const duration = track.duration.totalSeconds;
+	if (track.duration !== undefined) {
+		const duration = track.duration;
 		if (
 			duration >= AD_PATTERNS.minAdDuration &&
 			duration <= AD_PATTERNS.maxAdDuration
@@ -140,7 +136,7 @@ const plugin: Plugin = {
 
 		// Listen for track changes to detect ads that slip through
 		context.on('track-change', event => {
-			if (event.track && isAd(event.track)) {
+			if ('track' in event && event.track && isAd(event.track)) {
 				context.logger.warn(
 					`Ad detected in playback: "${event.track.title}" - skipping`,
 				);

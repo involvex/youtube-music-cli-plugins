@@ -109,7 +109,7 @@ const plugin: Plugin = {
 		await discord.connect();
 
 		context.on('track-change', event => {
-			if (event.track) {
+			if ('track' in event && event.track) {
 				void discord.updateActivity({
 					title: event.track.title,
 					artist: getArtist(event.track),
