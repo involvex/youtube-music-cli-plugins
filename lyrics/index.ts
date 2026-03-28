@@ -262,4 +262,3 @@ export function getLyricLine(position: number): LyricLine | null {
 }
 
 export default plugin;
-export {manifest};
