@@ -61,27 +61,7 @@ async function showNotification(
 				`notify-send "${title}" "${message}" -t ${config.duration}`,
 			);
 		} else if (platform === 'win32') {
-			// Windows - use PowerShell toast notification
-			const ps = `
-        [Windows.UI.Notifications.ToastNotificationManager, Windows.UI.Notifications, ContentType = WindowsRuntime] | Out-Null
-        [Windows.Data.Xml.Dom.XmlDocument, Windows.Data.Xml.Dom.XmlDocument, ContentType = WindowsRuntime] | Out-Null
-        $template = @"
-<toast>
-    <visual>
-        <binding template="ToastText02">
-            <text id="1">${title}</text>
-            <text id="2">${message}</text>
-        </binding>
-    </visual>
-</toast>
-"@
-        $xml = New-Object Windows.Data.Xml.Dom.XmlDocument
-        $xml.LoadXml($template)
-        $toast = [Windows.UI.Notifications.ToastNotification]::new($xml)
-        [Windows.UI.Notifications.ToastNotificationManager]::CreateToastNotifier("youtube-music-cli").Show($toast)
-      `;
-
-			// Simplified fallback for Windows
+			// Windows - use PowerShell toast notification (simplified fallback)
 			await execAsync(
 				`powershell -Command "Add-Type -AssemblyName System.Windows.Forms; [System.Windows.Forms.MessageBox]::Show('${message}', '${title}')"`,
 			);
@@ -127,7 +107,7 @@ const plugin: Plugin = {
 
 		// Listen for track changes
 		context.on('track-change', event => {
-			if (event.track && config.showOnPlay) {
+			if ('track' in event && event.track && config.showOnPlay) {
 				const {title, message} = formatTrackNotification(event.track);
 				void showNotification(title, message, context);
 			}

@@ -120,8 +120,9 @@ async function updateNowPlaying(
 		params['album'] = album;
 	}
 
-	if (track.duration?.totalSeconds) {
-		params['duration'] = String(track.duration.totalSeconds);
+	if (track.duration) {
+		// duration is in seconds for Last.fm
+		params['duration'] = String(Math.floor(track.duration / 1000));
 	}
 
 	try {
@@ -164,7 +165,7 @@ async function scrobble(
 			artist,
 			album,
 			timestamp,
-			duration: track.duration?.totalSeconds,
+			duration: track.duration ? Math.floor(track.duration / 1000) : undefined,
 		});
 
 		// Save pending scrobbles
@@ -208,7 +209,7 @@ const plugin: Plugin = {
 		context.logger.info('Last.fm Scrobbler initialized');
 
 		// Load configuration
-		config = context.config.get<ScrobblerConfig>('lastfm', null);
+		config = context.config.get<ScrobblerConfig | null>('lastfm', null);
 
 		if (!config || !config.sessionKey) {
 			context.logger.warn(
@@ -235,7 +236,7 @@ const plugin: Plugin = {
 			// Scrobble previous track if played enough
 			if (currentTrack && !scrobbled) {
 				const playTime = Date.now() - playStartTime;
-				const duration = (currentTrack.duration?.totalSeconds || 180) * 1000;
+				const duration = currentTrack.duration || 180000;
 
 				if (playTime >= duration * SCROBBLE_THRESHOLD || playTime >= 240000) {
 					await scrobble(currentTrack, playStartTime, context);
@@ -243,7 +244,7 @@ const plugin: Plugin = {
 			}
 
 			// Update to new track
-			currentTrack = event.track || null;
+			currentTrack = 'track' in event ? (event.track ?? null) : null;
 			playStartTime = Date.now();
 			scrobbled = false;
 
@@ -270,7 +271,7 @@ const plugin: Plugin = {
 		// Scrobble current track if applicable
 		if (currentTrack && !scrobbled) {
 			const playTime = Date.now() - playStartTime;
-			const duration = (currentTrack.duration?.totalSeconds || 180) * 1000;
+			const duration = currentTrack.duration || 180000;
 
 			if (playTime >= duration * SCROBBLE_THRESHOLD) {
 				await scrobble(currentTrack, playStartTime, context);
