@@ -26,12 +26,12 @@ You need to configure your Last.fm API credentials:
 
 ```json
 {
-	"lastfm": {
-		"apiKey": "your_api_key",
-		"apiSecret": "your_api_secret",
-		"sessionKey": "your_session_key",
-		"username": "your_username"
-	}
+  "lastfm": {
+    "apiKey": "your_api_key",
+    "apiSecret": "your_api_secret",
+    "sessionKey": "your_session_key",
+    "username": "your_username"
+  }
 }
 ```
 

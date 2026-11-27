@@ -35,12 +35,12 @@ Edit the config to customize:
 
 ```json
 {
-	"discord": {
-		"enabled": true,
-		"showAlbumArt": true,
-		"showTimeRemaining": true,
-		"showPausedStatus": true
-	}
+  "discord": {
+    "enabled": true,
+    "showAlbumArt": true,
+    "showTimeRemaining": true,
+    "showPausedStatus": true
+  }
 }
 ```
 
