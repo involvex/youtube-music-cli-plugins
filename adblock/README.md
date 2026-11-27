@@ -36,11 +36,11 @@ The plugin stores its configuration in its data directory:
 
 ```json
 {
-	"stats": {
-		"blockedCount": 42,
-		"blockedVideoIds": ["abc123", "def456"],
-		"lastBlocked": "Some Ad Title"
-	}
+  "stats": {
+    "blockedCount": 42,
+    "blockedVideoIds": ["abc123", "def456"],
+    "lastBlocked": "Some Ad Title"
+  }
 }
 ```
 

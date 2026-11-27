@@ -4,141 +4,142 @@
  * Shows desktop notifications when the track changes.
  */
 
+import { exec } from "child_process";
+import { promisify } from "util";
+
 import type {
-	Plugin,
-	PluginManifest,
-	PluginContext,
-	Track,
-} from '../../source/types/plugin.types.ts';
-import {exec} from 'child_process';
-import {promisify} from 'util';
+  Plugin,
+  PluginContext,
+  PluginManifest,
+  Track,
+} from "../../source/types/plugin.types.ts";
 
 const execAsync = promisify(exec);
 
 const manifest: PluginManifest = {
-	id: 'notifications',
-	name: 'Desktop Notifications',
-	version: '1.0.0',
-	description: 'Desktop notifications for track changes',
-	author: 'Involvex',
-	license: 'MIT',
-	main: 'index.ts',
-	permissions: ['player', 'config'],
-	hooks: ['track-change'],
+  id: "notifications",
+  name: "Desktop Notifications",
+  version: "1.0.0",
+  description: "Desktop notifications for track changes",
+  author: "Involvex",
+  license: "MIT",
+  main: "index.ts",
+  permissions: ["player", "config"],
+  hooks: ["track-change"],
 };
 
 interface NotificationsConfig {
-	enabled: boolean;
-	showOnPlay: boolean;
-	showOnPause: boolean;
-	showArtwork: boolean;
-	duration: number; // milliseconds
+  enabled: boolean;
+  showOnPlay: boolean;
+  showOnPause: boolean;
+  showArtwork: boolean;
+  duration: number; // milliseconds
 }
 
 let config: NotificationsConfig = {
-	enabled: true,
-	showOnPlay: true,
-	showOnPause: false,
-	showArtwork: true,
-	duration: 5000,
+  enabled: true,
+  showOnPlay: true,
+  showOnPause: false,
+  showArtwork: true,
+  duration: 5000,
 };
 
 async function showNotification(
-	title: string,
-	message: string,
-	context: PluginContext,
+  title: string,
+  message: string,
+  context: PluginContext,
 ): Promise<void> {
-	const platform = process.platform;
+  const platform = process.platform;
 
-	try {
-		if (platform === 'darwin') {
-			// macOS - use osascript
-			const script = `display notification "${message}" with title "${title}"`;
-			await execAsync(`osascript -e '${script}'`);
-		} else if (platform === 'linux') {
-			// Linux - use notify-send
-			await execAsync(
-				`notify-send "${title}" "${message}" -t ${config.duration}`,
-			);
-		} else if (platform === 'win32') {
-			// Windows - use PowerShell toast notification (simplified fallback)
-			await execAsync(
-				`powershell -Command "Add-Type -AssemblyName System.Windows.Forms; [System.Windows.Forms.MessageBox]::Show('${message}', '${title}')"`,
-			);
-		}
+  try {
+    if (platform === "darwin") {
+      // macOS - use osascript
+      const script = `display notification "${message}" with title "${title}"`;
+      await execAsync(`osascript -e '${script}'`);
+    } else if (platform === "linux") {
+      // Linux - use notify-send
+      await execAsync(
+        `notify-send "${title}" "${message}" -t ${config.duration}`,
+      );
+    } else if (platform === "win32") {
+      // Windows - use PowerShell toast notification (simplified fallback)
+      await execAsync(
+        `powershell -Command "Add-Type -AssemblyName System.Windows.Forms; [System.Windows.Forms.MessageBox]::Show('${message}', '${title}')"`,
+      );
+    }
 
-		context.logger.debug(`Notification shown: ${title}`);
-	} catch (error) {
-		context.logger.warn(`Failed to show notification: ${error}`);
-	}
+    context.logger.debug(`Notification shown: ${title}`);
+  } catch (error) {
+    context.logger.warn(`Failed to show notification: ${error}`);
+  }
 }
 
 function formatTrackNotification(track: Track): {
-	title: string;
-	message: string;
+  title: string;
+  message: string;
 } {
-	const artist = track.artists?.[0]?.name || 'Unknown Artist';
-	const album = track.album?.name;
+  const artist = track.artists?.[0]?.name || "Unknown Artist";
+  const album = track.album?.name;
 
-	let message = `by ${artist}`;
-	if (album) {
-		message += `\n${album}`;
-	}
+  let message = `by ${artist}`;
+  if (album) {
+    message += `\n${album}`;
+  }
 
-	return {
-		title: `🎵 ${track.title}`,
-		message,
-	};
+  return {
+    title: `🎵 ${track.title}`,
+    message,
+  };
 }
 
 const plugin: Plugin = {
-	manifest,
+  manifest,
 
-	async init(context: PluginContext) {
-		context.logger.info('Desktop Notifications initialized');
+  async init(context: PluginContext) {
+    context.logger.info("Desktop Notifications initialized");
 
-		// Load configuration
-		config = context.config.get<NotificationsConfig>('notifications', config);
+    // Load configuration
+    config = context.config.get<NotificationsConfig>("notifications", config);
 
-		if (!config.enabled) {
-			context.logger.info('Desktop notifications are disabled');
-			return;
-		}
+    if (!config.enabled) {
+      context.logger.info("Desktop notifications are disabled");
+      return;
+    }
 
-		// Listen for track changes
-		context.on('track-change', event => {
-			if ('track' in event && event.track && config.showOnPlay) {
-				const {title, message} = formatTrackNotification(event.track);
-				void showNotification(title, message, context);
-			}
-		});
+    // Listen for track changes
+    context.on("track-change", event => {
+      if ("track" in event && event.track && config.showOnPlay) {
+        const { title, message } = formatTrackNotification(event.track);
+        void showNotification(title, message, context);
+      }
+    });
 
-		// Listen for pause if configured
-		if (config.showOnPause) {
-			context.on('pause', () => {
-				void showNotification('⏸️ Paused', 'Music playback paused', context);
-			});
-		}
-	},
+    // Listen for pause if configured
+    if (config.showOnPause) {
+      context.on("pause", () => {
+        void showNotification("⏸️ Paused", "Music playback paused", context);
+      });
+    }
+  },
 
-	async enable(context: PluginContext) {
-		context.logger.info('Desktop Notifications enabled');
+  async enable(context: PluginContext) {
+    context.logger.info("Desktop Notifications enabled");
 
-		// Show a test notification
-		await showNotification(
-			'🔔 Notifications Enabled',
-			"You'll see notifications when tracks change",
-			context,
-		);
-	},
+    // Show a test notification
+    await showNotification(
+      "🔔 Notifications Enabled",
+      "You'll see notifications when tracks change",
+      context,
+    );
+  },
 
-	async disable(context: PluginContext) {
-		context.logger.info('Desktop Notifications disabled');
-	},
+  async disable(context: PluginContext) {
+    context.logger.info("Desktop Notifications disabled");
+  },
 
-	async destroy(context: PluginContext) {
-		context.logger.info('Desktop Notifications destroyed');
-	},
+  async destroy(context: PluginContext) {
+    context.logger.info("Desktop Notifications destroyed");
+  },
 };
 
 export default plugin;

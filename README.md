@@ -43,15 +43,15 @@ plugin-name/
 
 ```json
 {
-	"id": "plugin-name",
-	"name": "Plugin Name",
-	"version": "1.0.0",
-	"description": "What this plugin does",
-	"author": "Your Name",
-	"license": "MIT",
-	"main": "index.ts",
-	"permissions": ["player", "ui", "config"],
-	"hooks": ["track-change", "play", "pause"]
+  "id": "plugin-name",
+  "name": "Plugin Name",
+  "version": "1.0.0",
+  "description": "What this plugin does",
+  "author": "Your Name",
+  "license": "MIT",
+  "main": "index.ts",
+  "permissions": ["player", "ui", "config"],
+  "hooks": ["track-change", "play", "pause"]
 }
 ```
 

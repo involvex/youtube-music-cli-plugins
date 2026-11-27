@@ -40,13 +40,13 @@ Native notification via notify-send
 
 ```json
 {
-	"notifications": {
-		"enabled": true,
-		"showOnPlay": true,
-		"showOnPause": false,
-		"showArtwork": true,
-		"duration": 5000
-	}
+  "notifications": {
+    "enabled": true,
+    "showOnPlay": true,
+    "showOnPause": false,
+    "showArtwork": true,
+    "duration": 5000
+  }
 }
 ```
 
